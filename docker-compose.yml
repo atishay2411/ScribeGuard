@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: scribeguard_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: scribeguard
+      POSTGRES_PASSWORD: scribeguard
+      POSTGRES_DB: scribeguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: ./backend
+    container_name: scribeguard_api
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
